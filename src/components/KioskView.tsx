@@ -13,8 +13,7 @@ import { KioskState, KioskSettings, VideoRecord } from '../types';
 import { playCountdownBeep, playVintageClick } from '../services/audio';
 import { 
   saveRecoverySession, 
-  clearRecoverySession, 
-  generateVideoThumbnail 
+  clearRecoverySession 
 } from '../services/db';
 import { EventHeader } from './EventHeader';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -93,6 +92,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
   const [showSenderModal, setShowSenderModal] = useState(false);
   const [senderNameInput, setSenderNameInput] = useState('');
   const activeSenderNameRef = useRef<string>('');
+  const isProcessingVideoRef = useRef<boolean>(false);
 
   // Initialize Camera (Resilient multi-tier fallback with Apple-standard high fidelity)
   const initCamera = useCallback(async () => {
@@ -514,13 +514,15 @@ export const KioskView: React.FC<KioskViewProps> = ({
   };
 
   const processAndSaveVideo = async (mimeType: string) => {
-    if (stateRef.current !== 'SAVING') return;
+    if (stateRef.current !== 'SAVING' || isProcessingVideoRef.current) return;
+    isProcessingVideoRef.current = true;
     try {
       const chunks = [...recordedChunksRef.current];
       const duration = recordingSeconds || Math.max(1, Math.round((Date.now() - sessionStartTimeRef.current) / 1000));
 
       if (chunks.length === 0 || duration < 1.5) {
-        clearRecoverySession();
+        clearRecoverySession().catch(() => {});
+        isProcessingVideoRef.current = false;
         setState('STANDBY');
         return;
       }
@@ -565,9 +567,6 @@ export const KioskView: React.FC<KioskViewProps> = ({
 
       (async () => {
         try {
-          const thumbnailUrl = await generateVideoThumbnail(blob);
-          const fullRecord = { ...initialRecord, thumbnailUrl };
-          setLastSavedRecord(fullRecord);
           await clearRecoverySession();
         } catch (dbErr) {
           console.warn('[Memore DB] Background cleanup error:', dbErr);
@@ -582,6 +581,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
       }, 5000);
     } catch (err) {
       console.error('[Memore] Video process error:', err);
+      isProcessingVideoRef.current = false;
       setState('STANDBY');
     }
   };
@@ -605,24 +605,22 @@ export const KioskView: React.FC<KioskViewProps> = ({
   };
 
   const handleReturnToStandby = () => {
-    try {
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((t) => {
-          try {
-            t.stop();
-          } catch {}
-        });
-        streamRef.current = null;
-      }
-    } catch (e) {
-      console.warn('Error releasing stream before reload:', e);
+    // Graceful soft reset without page reload to maintain high responsiveness & 0s camera delay
+    isProcessingVideoRef.current = false;
+    activeSenderNameRef.current = '';
+    setSenderNameInput('');
+    setShowSenderModal(false);
+    recordedChunksRef.current = [];
+    setRecordingSeconds(0);
+    setLastSavedRecord(null);
+    setPreviewVideoUrl(null);
+    clearRecoverySession().catch(() => {});
+
+    if (settingsRef.current.useWelcomeScreen !== false) {
+      setState('WELCOME');
+    } else {
+      setState('STANDBY');
     }
-    setTimeout(() => {
-      window.location.reload();
-    }, 150);
   };
 
   // Auto-return to Welcome screen if idle on STANDBY for 60 seconds
@@ -744,7 +742,11 @@ export const KioskView: React.FC<KioskViewProps> = ({
               </div>
               {settings.useWelcomeScreen !== false && (
                 <button
-                  onClick={() => setState('WELCOME')}
+                  onClick={() => {
+                    activeSenderNameRef.current = '';
+                    setSenderNameInput('');
+                    setState('WELCOME');
+                  }}
                   className="px-4 py-1.5 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-xl border border-white/20 text-[11px] font-sans font-medium text-white/90 transition active:scale-95 cursor-pointer shadow-md"
                 >
                   ← Kembali ke Halaman Pembuka

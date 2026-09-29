@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, ArrowRight, X } from 'lucide-react';
 
 interface SenderNameModalProps {
@@ -15,6 +15,12 @@ export const SenderNameModal: React.FC<SenderNameModalProps> = ({
   onSkip,
 }) => {
   const [nameInput, setNameInput] = useState(initialName);
+
+  useEffect(() => {
+    if (isOpen) {
+      setNameInput(initialName);
+    }
+  }, [isOpen, initialName]);
 
   if (!isOpen) return null;
 

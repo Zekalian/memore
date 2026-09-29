@@ -12,7 +12,11 @@ import {
   Wifi,
   WifiOff,
   CheckCircle2,
-  Smartphone
+  Smartphone,
+  Info,
+  Instagram,
+  MessageCircle,
+  Sparkles
 } from 'lucide-react';
 import { KioskSettings, getTextMonogramStyle } from '../types';
 
@@ -46,7 +50,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
   onSelectAudioDevice = (_deviceId: string) => {},
 }) => {
   // Tabs
-  const [activeTab, setActiveTab] = useState<'branding' | 'controls'>('branding');
+  const [activeTab, setActiveTab] = useState<'branding' | 'controls' | 'about'>('branding');
   const [audioLevel, setAudioLevel] = useState<number>(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
@@ -212,18 +216,18 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
           <div className="bg-[#E5E5EA] p-1 rounded-2xl flex gap-1">
             <button
               onClick={() => setActiveTab('branding')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'branding'
                   ? 'bg-white text-[#1D1D1F] shadow-sm'
                   : 'text-[#8E8E93] hover:text-[#1D1D1F]'
               }`}
             >
               <ImageIcon className="w-3.5 h-3.5" />
-              <span>Branding (PNG / Teks)</span>
+              <span>Branding</span>
             </button>
             <button
               onClick={() => setActiveTab('controls')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'controls'
                   ? 'bg-white text-[#1D1D1F] shadow-sm'
                   : 'text-[#8E8E93] hover:text-[#1D1D1F]'
@@ -231,6 +235,17 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
             >
               <Sliders className="w-3.5 h-3.5" />
               <span>Kamera &amp; Audio</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('about')}
+              className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                activeTab === 'about'
+                  ? 'bg-white text-[#1D1D1F] shadow-sm'
+                  : 'text-[#8E8E93] hover:text-[#1D1D1F]'
+              }`}
+            >
+              <Info className="w-3.5 h-3.5" />
+              <span>Tentang Aplikasi</span>
             </button>
           </div>
         </div>
@@ -1211,9 +1226,116 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                     <p className="text-[11px] leading-relaxed">
-                      <strong>Cara Pasang Layar Penuh (Kiosk):</strong> Di Safari iPad, ketuk tombol <strong>Share (Bagikan ⎋)</strong> ➔ pilih <strong>Tambah ke Layar Utama (Add to Home Screen)</strong>. Buka dari ikon Home Screen agar bar URL Safari hilang menjadi kiosk murni.
+                      <strong>Cara Pasang Layar Penuh:</strong> Di Safari iPad, ketuk tombol <strong>Share (Bagikan ⎋)</strong> ➔ pilih <strong>Tambah ke Layar Utama (Add to Home Screen)</strong>. Buka dari ikon Home Screen agar bar URL Safari hilang menjadi tampilan layar penuh murni.
                     </p>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: TENTANG APLIKASI */}
+          {activeTab === 'about' && (
+            <div className="space-y-4 animate-fade-in">
+              {/* Header Hero Card */}
+              <div className="p-6 rounded-3xl bg-gradient-to-b from-[#1D1D1F] to-[#2C2C2E] text-white shadow-xl flex flex-col items-center text-center space-y-3 border border-white/10 relative overflow-hidden">
+                <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl flex items-center justify-center shadow-lg">
+                  <span className="font-serif text-2xl font-light text-[#D4AF37] tracking-widest">
+                    ∞
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-xl font-serif tracking-[0.25em] font-medium text-white uppercase">
+                    MEMORÉ
+                  </h3>
+                  <p className="text-[11px] font-sans font-light tracking-widest text-[#D4AF37] uppercase">
+                    Forever — Endless — Remembrance
+                  </p>
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-mono font-medium text-white/90">
+                  <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Audio &amp; Video Guestbook • Versi 2.4.0</span>
+                </div>
+              </div>
+
+              {/* Section 1: Tentang Aplikasi */}
+              <div className="p-5 rounded-2xl bg-white border border-[#E5E5EA] space-y-2.5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center">
+                    <Info className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-sans font-bold text-[#1D1D1F]">
+                    Tentang Aplikasi
+                  </h4>
+                </div>
+                <p className="text-xs text-[#515154] leading-relaxed">
+                  <strong>Memore Audio Guestbook</strong> adalah sistem buku tamu interaktif modern yang dirancang khusus untuk mengabadikan momen berharga di hari pernikahan dan perayaan istimewa. Memadukan estetika minimalis khas Apple dengan performa <em>studio-grade</em>, aplikasi ini memberikan keleluasaan bagi para tamu untuk merekam doa, senyuman, dan ucapan hangat mereka secara mandiri dalam visual Full HD serta audio yang jernih.
+                </p>
+              </div>
+
+              {/* Section 2: Tentang Memoré */}
+              <div className="p-5 rounded-2xl bg-white border border-[#E5E5EA] space-y-2.5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#D4AF37]/15 text-[#B89628] flex items-center justify-center">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-sans font-bold text-[#1D1D1F]">
+                    Tentang Memoré
+                  </h4>
+                </div>
+                <p className="text-xs text-[#515154] leading-relaxed">
+                  <strong>Memoré</strong> hadir untuk merawat kenangan agar abadi melintasi waktu, karena setiap momen berharga hidup dari tulusnya getaran suara, tawa lepas, dan tatapan mata orang-orang terkasih. Untuk melengkapi hari istimewa Anda, Memoré menghadirkan rangkaian pilihan layanan mulai dari <strong>Audio Guestbook</strong> melalui telepon retro klasik, <strong>Audio &amp; Video Guestbook</strong> interaktif, hingga paket <strong>Audio &amp; Video + Edited Reels</strong> sinematik yang siap dibagikan ke media sosial.
+                </p>
+              </div>
+
+              {/* Section 3: Developed by Zekalian */}
+              <div className="p-5 rounded-2xl bg-white border border-[#E5E5EA] space-y-2.5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-black/5 text-[#1D1D1F] flex items-center justify-center">
+                    <Smartphone className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-sans font-bold text-[#1D1D1F]">
+                    Developed by Zekalian
+                  </h4>
+                </div>
+                <p className="text-xs text-[#515154] leading-relaxed">
+                  Aplikasi ini dirancang dan dikembangkan oleh{' '}
+                  <a
+                    href="https://www.instagram.com/Zekalian"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-[#0071E3] hover:underline underline-offset-2 transition-colors inline-flex items-center gap-0.5"
+                  >
+                    <span>Zekalian</span>
+                  </a>
+                  , mitra solusi kreatif yang mewujudkan ide bisnis dan mendigitalkan brand Anda melalui layanan pengembangan digital, <em>Branding &amp; Identity</em>, <em>Social Media</em>, dan <em>Production House</em>.
+                </p>
+              </div>
+
+              {/* Section 4: Hubungi & Media Sosial Memoré */}
+              <div className="p-5 rounded-2xl bg-white border border-[#E5E5EA] space-y-3 shadow-sm">
+                <h4 className="text-xs font-sans font-semibold text-[#8E8E93] uppercase tracking-wider">
+                  Hubungi &amp; Media Sosial Memoré
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <a
+                    href="https://www.instagram.com/memoreee_/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-3 px-4 rounded-xl bg-gradient-to-r from-[#F58529]/10 via-[#DD2A7B]/10 to-[#8134AF]/10 hover:from-[#F58529]/20 hover:via-[#DD2A7B]/20 hover:to-[#8134AF]/20 border border-[#DD2A7B]/20 text-[#1D1D1F] text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95 shadow-sm cursor-pointer"
+                  >
+                    <Instagram className="w-4 h-4 text-[#DD2A7B]" />
+                    <span>Instagram @memoreee_</span>
+                  </a>
+                  <a
+                    href="https://wa.me/62895329828228"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-3 px-4 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#1D1D1F] text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95 shadow-sm cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                    <span>WhatsApp Memoré</span>
+                  </a>
                 </div>
               </div>
             </div>

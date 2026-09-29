@@ -388,48 +388,6 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                   </div>
                 </div>
 
-                {/* Quick Presets */}
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-semibold text-[#8E8E93] block">
-                    Pilihan Cepat Logo:
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onUpdateSettings({ businessLogoUrl: '/logo-blue.png', logoBackgroundStyle: 'light' })}
-                      className={`py-1.5 px-3 rounded-lg text-xs font-medium border transition cursor-pointer active:scale-95 ${
-                        settings.businessLogoUrl === '/logo-blue.png'
-                          ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold'
-                          : 'bg-[#F2F2F7] border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA]'
-                      }`}
-                    >
-                      🔵 Logo Memore (Biru)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onUpdateSettings({ businessLogoUrl: '/logo-white.png', logoBackgroundStyle: 'dark' })}
-                      className={`py-1.5 px-3 rounded-lg text-xs font-medium border transition cursor-pointer active:scale-95 ${
-                        settings.businessLogoUrl === '/logo-white.png'
-                          ? 'bg-stone-800 border-stone-900 text-white font-semibold'
-                          : 'bg-[#F2F2F7] border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA]'
-                      }`}
-                    >
-                      ⚪ Logo Memore (Putih)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onUpdateSettings({ businessLogoUrl: '/business-logo-placeholder.png' })}
-                      className={`py-1.5 px-3 rounded-lg text-xs font-medium border transition cursor-pointer active:scale-95 ${
-                        settings.businessLogoUrl === '/business-logo-placeholder.png'
-                          ? 'bg-amber-50 border-amber-300 text-amber-800 font-semibold'
-                          : 'bg-[#F2F2F7] border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA]'
-                      }`}
-                    >
-                      ⭐ Placeholder Bawaan
-                    </button>
-                  </div>
-                </div>
-
                 {/* Preview Box with Pixel Dimensions Badge & Live Style Demonstration */}
                 <div className="relative p-5 rounded-2xl bg-[#141416] flex flex-col items-center justify-center border border-black/10 overflow-hidden">
                   <div className="absolute top-2 right-2 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-black/60 text-[#F4E8D3] border border-white/10 backdrop-blur-sm z-10">

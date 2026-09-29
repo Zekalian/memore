@@ -1068,7 +1068,14 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                       Batas Maksimal Rekaman (Safety Limit)
                     </label>
                     <span className="text-xs font-mono font-semibold text-[#0071E3]">
-                      {settings.maxDurationSec} detik ({Math.round(settings.maxDurationSec / 60)} menit)
+                      {(() => {
+                        const sec = settings.maxDurationSec || 180;
+                        if (sec < 60) return `${sec} detik`;
+                        const mins = Math.floor(sec / 60);
+                        const remSec = sec % 60;
+                        if (remSec === 0) return `${sec} detik (${mins} menit)`;
+                        return `${sec} detik (${mins} menit ${remSec} detik)`;
+                      })()}
                     </span>
                   </div>
                   <input

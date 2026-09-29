@@ -173,7 +173,16 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </div>
           <div className="p-3 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-center text-center">
             <Clock className="w-4 h-4 text-[#0071E3] mb-1" />
-            <span className="text-[11px] font-semibold text-white">Maks. 3 Menit</span>
+            <span className="text-[11px] font-semibold text-white">
+              {(() => {
+                const sec = settings.maxDurationSec || 180;
+                if (sec < 60) return `Maks. ${sec} Detik`;
+                const mins = Math.floor(sec / 60);
+                const remSec = sec % 60;
+                if (remSec === 0) return `Maks. ${mins} Menit`;
+                return `Maks. ${mins}m ${remSec}s`;
+              })()}
+            </span>
             <span className="text-[9px] text-stone-400">Cukup Bercerita</span>
           </div>
           <div className="p-3 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-center text-center">

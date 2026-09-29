@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --apple-system-bg: #000000;
+    --apple-system-text: #FFFFFF;
+    --apple-system-blue: #0071E3;
+    --apple-system-red: #FF3B30;
+    --apple-system-green: #34C759;
+  }
+
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Plus Jakarta Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+  }
+
+  #root {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000000;
+  }
+}
+
+/* iOS PWA Safe Area Utilities */
+.pb-safe {
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+}
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top, 0px));
+}
+
+/* Apple Smooth Animations */
+@keyframes applePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+.apple-pulse {
+  animation: applePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

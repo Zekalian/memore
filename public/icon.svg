@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c0658"/>
+      <stop offset="100%" stop-color="#050228"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- App Icon Background -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="94" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+
+  <!-- Official MEMORÉ Infinity Calligraphic Emblem in White -->
+  <g transform="translate(6, -10)">
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M 250 175
+         C 220 117, 140 107, 95 145
+         C 50 183, 60 241, 110 263
+         C 160 285, 215 227, 250 175
+         C 285 123, 340 107, 388 143
+         C 436 179, 432 243, 375 265
+         C 335 281, 290 259, 275 231
+         C 268 217, 274 205, 286 207
+         C 298 209, 308 229, 335 239
+         C 370 253, 405 219, 395 183
+         C 385 147, 330 141, 280 197
+         C 255 225, 230 257, 195 270
+         C 155 285, 95 273, 65 235
+         C 35 197, 45 145, 90 120
+         C 140 91, 218 103, 250 175 Z
+         M 108 151
+         C 78 167, 70 211, 96 235
+         C 122 259, 168 251, 192 223
+         C 214 197, 195 161, 168 149
+         C 146 139, 126 141, 108 151 Z"
+      fill="#ffffff"
+    />
+
+    <!-- Typography: MEMORÉ in Pure White -->
+    <text
+      x="250"
+      y="350"
+      text-anchor="middle"
+      fill="#ffffff"
+      font-family="'Cinzel', 'Times New Roman', Georgia, serif"
+      font-size="44"
+      font-weight="700"
+      letter-spacing="0.32em"
+    >MEMORÉ</text>
+  </g>
+</svg>

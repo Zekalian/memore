@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="100%" height="100%" fill="none">
+  <!-- Official MEMORÉ Infinity Calligraphic Emblem (Blue) -->
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M 250 160
+       C 220 102, 140 92, 95 130
+       C 50 168, 60 226, 110 248
+       C 160 270, 215 212, 250 160
+       C 285 108, 340 92, 388 128
+       C 436 164, 432 228, 375 250
+       C 335 266, 290 244, 275 216
+       C 268 202, 274 190, 286 192
+       C 298 194, 308 214, 335 224
+       C 370 238, 405 204, 395 168
+       C 385 132, 330 126, 280 182
+       C 255 210, 230 242, 195 255
+       C 155 270, 95 258, 65 220
+       C 35 182, 45 130, 90 105
+       C 140 76, 218 88, 250 160 Z
+       M 108 136
+       C 78 152, 70 196, 96 220
+       C 122 244, 168 236, 192 208
+       C 214 182, 195 146, 168 134
+       C 146 124, 126 126, 108 136 Z"
+    fill="#0a00a8"
+  />
+
+  <!-- MEMORÉ Typography in Blue -->
+  <text
+    x="250"
+    y="330"
+    text-anchor="middle"
+    fill="#0a00a8"
+    font-family="'Cinzel', 'Times New Roman', Georgia, serif"
+    font-size="44"
+    font-weight="700"
+    letter-spacing="0.32em"
+  >MEMORÉ</text>
+</svg>

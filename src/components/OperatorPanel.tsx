@@ -1239,11 +1239,6 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
             <div className="space-y-4 animate-fade-in">
               {/* Header Hero Card */}
               <div className="p-6 rounded-3xl bg-gradient-to-b from-[#1D1D1F] to-[#2C2C2E] text-white shadow-xl flex flex-col items-center text-center space-y-3 border border-white/10 relative overflow-hidden">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl flex items-center justify-center shadow-lg">
-                  <span className="font-serif text-2xl font-light text-[#D4AF37] tracking-widest">
-                    ∞
-                  </span>
-                </div>
                 <div className="space-y-1">
                   <h3 className="text-xl font-serif tracking-[0.25em] font-medium text-white uppercase">
                     MEMORÉ

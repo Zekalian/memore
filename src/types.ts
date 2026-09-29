@@ -94,3 +94,31 @@ export interface StorageStats {
   percentUsed: number;
   isCritical: boolean; // >= 85%
 }
+
+export function getTextMonogramStyle(settings: {
+  textColorType?: 'solid' | 'gradient';
+  textColorSolid?: string;
+  textGradientStart?: string;
+  textGradientEnd?: string;
+  textGradientAngle?: number;
+}): React.CSSProperties {
+  if (settings.textColorType === 'gradient') {
+    const angle = settings.textGradientAngle ?? 135;
+    const start = settings.textGradientStart || '#D4AF37';
+    const end = settings.textGradientEnd || '#F4E8D3';
+    return {
+      backgroundImage: `linear-gradient(${angle}deg, ${start}, ${end})`,
+      WebkitBackgroundClip: 'text',
+      backgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      color: 'transparent',
+    };
+  }
+  return {
+    backgroundImage: 'none',
+    WebkitBackgroundClip: 'border-box',
+    backgroundClip: 'border-box',
+    WebkitTextFillColor: 'currentColor',
+    color: settings.textColorSolid || '#FFFFFF',
+  };
+}

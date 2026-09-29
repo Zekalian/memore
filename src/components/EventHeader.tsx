@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sliders, RotateCcw } from 'lucide-react';
+import { getTextMonogramStyle } from '../types';
 
 interface EventHeaderProps {
   businessLogoUrl?: string;
@@ -48,21 +49,13 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   const [bannerLoadFailed, setBannerLoadFailed] = useState(false);
 
   const getTextStyle = (): React.CSSProperties => {
-    if (textColorType === 'gradient') {
-      const angle = textGradientAngle ?? 135;
-      const start = textGradientStart || '#D4AF37';
-      const end = textGradientEnd || '#F4E8D3';
-      return {
-        background: `linear-gradient(${angle}deg, ${start}, ${end})`,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        color: 'transparent',
-      };
-    }
-    return {
-      color: textColorSolid || '#FFFFFF',
-    };
+    return getTextMonogramStyle({
+      textColorType,
+      textColorSolid,
+      textGradientStart,
+      textGradientEnd,
+      textGradientAngle,
+    });
   };
 
   // Apple-grade Logo Container (No squished oval egg! Uses squircle rounded-2xl)

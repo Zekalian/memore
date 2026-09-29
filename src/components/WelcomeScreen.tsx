@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Video, Sliders, Sparkles, Clock, Mic, Heart, RotateCcw } from 'lucide-react';
-import { KioskSettings } from '../types';
+import { KioskSettings, getTextMonogramStyle } from '../types';
 import { playVintageClick } from '../services/audio';
 
 interface WelcomeScreenProps {
@@ -18,6 +18,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 }) => {
   const [logoLoadFailed, setLogoLoadFailed] = useState(false);
   const [bannerLoadFailed, setBannerLoadFailed] = useState(false);
+
+  const textStyle = getTextMonogramStyle(settings);
 
   const handleStart = () => {
     playVintageClick();
@@ -101,66 +103,26 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             <div className="flex flex-col items-center justify-center text-center font-[Times_New_Roman,serif] italic leading-tight">
               <span 
                 className="text-2xl sm:text-4xl md:text-5xl font-serif italic font-bold tracking-wide"
-                style={
-                  settings.textColorType === 'gradient'
-                    ? {
-                        background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                      }
-                    : { color: settings.textColorSolid || '#FFFFFF' }
-                }
+                style={textStyle}
               >
                 {settings.groomName || 'DAVID'}
               </span>
               <span 
                 className="text-base sm:text-2xl font-serif italic my-1"
-                style={
-                  settings.textColorType === 'gradient'
-                    ? {
-                        background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                      }
-                    : { color: settings.textColorSolid || '#FFFFFF' }
-                }
+                style={textStyle}
               >
                 &amp;
               </span>
               <span 
                 className="text-2xl sm:text-4xl md:text-5xl font-serif italic font-bold tracking-wide"
-                style={
-                  settings.textColorType === 'gradient'
-                    ? {
-                        background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                      }
-                    : { color: settings.textColorSolid || '#FFFFFF' }
-                }
+                style={textStyle}
               >
                 {settings.brideName || 'SARAH'}
               </span>
               {(settings.eventSubtext || settings.eventDate) && (
                 <span 
                   className="text-xs sm:text-sm font-sans not-italic font-semibold tracking-[0.25em] uppercase mt-2 opacity-90"
-                  style={
-                    settings.textColorType === 'gradient'
-                      ? {
-                          background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                          color: 'transparent',
-                        }
-                      : { color: settings.textColorSolid || '#FFFFFF' }
-                  }
+                  style={textStyle}
                 >
                   {settings.eventSubtext || settings.eventDate}
                 </span>

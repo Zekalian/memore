@@ -20,7 +20,7 @@ import {
   CheckCircle2,
   Smartphone
 } from 'lucide-react';
-import { KioskSettings, VideoRecord, StorageStats } from '../types';
+import { KioskSettings, VideoRecord, StorageStats, getTextMonogramStyle } from '../types';
 import { clearAllRecordings, deleteRecording, getStorageStats } from '../services/db';
 
 interface OperatorPanelProps {
@@ -812,66 +812,26 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                       <div className="py-2 flex flex-col items-center justify-center font-[Times_New_Roman,serif] italic">
                         <span 
                           className="text-xl font-serif italic font-bold tracking-wide"
-                          style={
-                            settings.textColorType === 'gradient'
-                              ? {
-                                  background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  backgroundClip: 'text',
-                                  color: 'transparent',
-                                }
-                              : { color: settings.textColorSolid || '#FFFFFF' }
-                          }
+                          style={getTextMonogramStyle(settings)}
                         >
                           {settings.groomName || 'DAVID'}
                         </span>
                         <span 
                           className="text-sm font-serif italic my-0.5"
-                          style={
-                            settings.textColorType === 'gradient'
-                              ? {
-                                  background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  backgroundClip: 'text',
-                                  color: 'transparent',
-                                }
-                              : { color: settings.textColorSolid || '#FFFFFF' }
-                          }
+                          style={getTextMonogramStyle(settings)}
                         >
                           &amp;
                         </span>
                         <span 
                           className="text-xl font-serif italic font-bold tracking-wide"
-                          style={
-                            settings.textColorType === 'gradient'
-                              ? {
-                                  background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  backgroundClip: 'text',
-                                  color: 'transparent',
-                                }
-                              : { color: settings.textColorSolid || '#FFFFFF' }
-                          }
+                          style={getTextMonogramStyle(settings)}
                         >
                           {settings.brideName || 'SARAH'}
                         </span>
                         {(settings.eventSubtext || settings.eventDate) && (
                           <span 
                             className="text-[10px] font-sans not-italic font-semibold tracking-[0.2em] uppercase mt-2 opacity-90"
-                            style={
-                              settings.textColorType === 'gradient'
-                                ? {
-                                    background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
-                                    color: 'transparent',
-                                  }
-                                : { color: settings.textColorSolid || '#FFFFFF' }
-                            }
+                            style={getTextMonogramStyle(settings)}
                           >
                             {settings.eventSubtext || settings.eventDate}
                           </span>

@@ -99,17 +99,69 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         >
           {settings.headerType === 'text' ? (
             <div className="flex flex-col items-center justify-center text-center font-[Times_New_Roman,serif] italic leading-tight">
-              <span className="text-2xl sm:text-4xl md:text-5xl font-serif italic font-bold text-white tracking-wide">
+              <span 
+                className="text-2xl sm:text-4xl md:text-5xl font-serif italic font-bold tracking-wide"
+                style={
+                  settings.textColorType === 'gradient'
+                    ? {
+                        background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                      }
+                    : { color: settings.textColorSolid || '#FFFFFF' }
+                }
+              >
                 {settings.groomName || 'DAVID'}
               </span>
-              <span className="text-base sm:text-2xl font-serif italic text-[#D4AF37] my-1">
+              <span 
+                className="text-base sm:text-2xl font-serif italic my-1"
+                style={
+                  settings.textColorType === 'gradient'
+                    ? {
+                        background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                      }
+                    : { color: settings.textColorSolid || '#FFFFFF' }
+                }
+              >
                 &amp;
               </span>
-              <span className="text-2xl sm:text-4xl md:text-5xl font-serif italic font-bold text-white tracking-wide">
+              <span 
+                className="text-2xl sm:text-4xl md:text-5xl font-serif italic font-bold tracking-wide"
+                style={
+                  settings.textColorType === 'gradient'
+                    ? {
+                        background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                      }
+                    : { color: settings.textColorSolid || '#FFFFFF' }
+                }
+              >
                 {settings.brideName || 'SARAH'}
               </span>
               {(settings.eventSubtext || settings.eventDate) && (
-                <span className="text-xs sm:text-sm font-sans not-italic font-semibold tracking-[0.25em] text-[#E5D7C5] uppercase mt-2">
+                <span 
+                  className="text-xs sm:text-sm font-sans not-italic font-semibold tracking-[0.25em] uppercase mt-2 opacity-90"
+                  style={
+                    settings.textColorType === 'gradient'
+                      ? {
+                          background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text',
+                          color: 'transparent',
+                        }
+                      : { color: settings.textColorSolid || '#FFFFFF' }
+                  }
+                >
                   {settings.eventSubtext || settings.eventDate}
                 </span>
               )}

@@ -32,6 +32,11 @@ const DEFAULT_SETTINGS: KioskSettings = {
   brideName: 'SARAH',
   eventSubtext: 'THE WEDDING CELEBRATION',
   eventDate: '27 SEPTEMBER 2026',
+  textColorType: 'solid',
+  textColorSolid: '#FFFFFF',
+  textGradientStart: '#D4AF37',
+  textGradientEnd: '#F4E8D3',
+  textGradientAngle: 135,
   countdownSeconds: 3,
 
   // Camera & Recording Specifications

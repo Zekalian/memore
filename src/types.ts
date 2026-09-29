@@ -54,6 +54,13 @@ export interface KioskSettings {
   eventSubtext?: string; // Event subtext / date (e.g. THE WEDDING CELEBRATION)
   eventDate: string; // Event subtext / date
 
+  // Text Monogram Color & Gradient Customization
+  textColorType?: 'solid' | 'gradient'; // 'solid' or 'gradient'
+  textColorSolid?: string; // e.g. '#FFFFFF' or '#D4AF37'
+  textGradientStart?: string; // e.g. '#D4AF37'
+  textGradientEnd?: string; // e.g. '#F4E8D3'
+  textGradientAngle?: number; // e.g. 135 (degrees)
+
   // Camera & Recording Parameters
   faceThreshold: number; // default 0.20 (20%)
   standbyScanInterval: number; // default 200ms

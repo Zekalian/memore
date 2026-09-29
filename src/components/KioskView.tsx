@@ -655,6 +655,11 @@ export const KioskView: React.FC<KioskViewProps> = ({
           brideName={settings.brideName}
           eventSubtext={settings.eventSubtext || settings.eventDate}
           eventDate={settings.eventDate}
+          textColorType={settings.textColorType}
+          textColorSolid={settings.textColorSolid}
+          textGradientStart={settings.textGradientStart}
+          textGradientEnd={settings.textGradientEnd}
+          textGradientAngle={settings.textGradientAngle}
           onOpenSettings={onOpenOperator}
           isRecording={state === 'RECORDING'}
           recordingSeconds={recordingSeconds}

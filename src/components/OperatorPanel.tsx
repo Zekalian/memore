@@ -619,23 +619,260 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                       />
                     </div>
 
+                    {/* CUSTOM COLOR & GRADIENT CONTROLS */}
+                    <div className="p-4 rounded-xl bg-[#F2F2F7] border border-[#E5E5EA] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-semibold text-[#1D1D1F] block">
+                          Warna &amp; Efek Gradient Teks:
+                        </label>
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => onUpdateSettings({ textColorType: 'solid' })}
+                            className={`py-1 px-2.5 rounded-lg text-[10px] font-sans font-semibold transition cursor-pointer ${
+                              (settings.textColorType || 'solid') === 'solid'
+                                ? 'bg-[#0071E3] text-white shadow-sm'
+                                : 'bg-[#E5E5EA] text-[#1D1D1F] hover:bg-[#D1D1D6]'
+                            }`}
+                          >
+                            🎨 Warna Solid
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onUpdateSettings({ textColorType: 'gradient' })}
+                            className={`py-1 px-2.5 rounded-lg text-[10px] font-sans font-semibold transition cursor-pointer ${
+                              settings.textColorType === 'gradient'
+                                ? 'bg-[#0071E3] text-white shadow-sm'
+                                : 'bg-[#E5E5EA] text-[#1D1D1F] hover:bg-[#D1D1D6]'
+                            }`}
+                          >
+                            🌈 Gradient
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* SOLID COLOR SELECTOR */}
+                      {(settings.textColorType || 'solid') === 'solid' && (
+                        <div className="space-y-2.5 pt-1">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={settings.textColorSolid || '#FFFFFF'}
+                              onChange={(e) => onUpdateSettings({ textColorSolid: e.target.value })}
+                              className="w-8 h-8 rounded-lg border border-[#E5E5EA] cursor-pointer bg-white p-0.5"
+                            />
+                            <input
+                              type="text"
+                              value={settings.textColorSolid || '#FFFFFF'}
+                              onChange={(e) => onUpdateSettings({ textColorSolid: e.target.value })}
+                              placeholder="#FFFFFF"
+                              className="w-28 bg-white border border-[#E5E5EA] rounded-xl px-3 py-1.5 text-xs text-[#1D1D1F] font-mono focus:outline-none focus:border-[#0071E3]"
+                            />
+                            <span className="text-[11px] text-[#8E8E93]">Pilih warna solid</span>
+                          </div>
+
+                          {/* Quick Solid Color Presets */}
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-medium text-[#8E8E93] block">Preset Warna Favorit:</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {[
+                                { name: '⚪ Putih', color: '#FFFFFF' },
+                                { name: '⭐ Emas Luxe', color: '#D4AF37' },
+                                { name: '🌸 Rose Gold', color: '#E0A96D' },
+                                { name: '🍾 Champagne', color: '#F4E8D3' },
+                                { name: '💎 Soft Cyan', color: '#60A5FA' },
+                                { name: '🖤 Hitam Slate', color: '#1D1D1F' },
+                              ].map((p) => (
+                                <button
+                                  key={p.color}
+                                  type="button"
+                                  onClick={() => onUpdateSettings({ textColorSolid: p.color })}
+                                  className="py-1 px-2 rounded-lg text-[10px] bg-white border border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA] flex items-center gap-1 transition cursor-pointer"
+                                >
+                                  <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: p.color }} />
+                                  <span>{p.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* GRADIENT SELECTOR */}
+                      {settings.textColorType === 'gradient' && (
+                        <div className="space-y-3 pt-1">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            {/* Start Color */}
+                            <div>
+                              <label className="text-[10px] font-semibold text-[#1D1D1F] block mb-1">Warna Awal (Start):</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={settings.textGradientStart || '#D4AF37'}
+                                  onChange={(e) => onUpdateSettings({ textGradientStart: e.target.value })}
+                                  className="w-8 h-8 rounded-lg border border-[#E5E5EA] cursor-pointer bg-white p-0.5"
+                                />
+                                <input
+                                  type="text"
+                                  value={settings.textGradientStart || '#D4AF37'}
+                                  onChange={(e) => onUpdateSettings({ textGradientStart: e.target.value })}
+                                  className="w-full bg-white border border-[#E5E5EA] rounded-xl px-2.5 py-1 text-xs text-[#1D1D1F] font-mono focus:outline-none focus:border-[#0071E3]"
+                                />
+                              </div>
+                            </div>
+
+                            {/* End Color */}
+                            <div>
+                              <label className="text-[10px] font-semibold text-[#1D1D1F] block mb-1">Warna Akhir (End):</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={settings.textGradientEnd || '#F4E8D3'}
+                                  onChange={(e) => onUpdateSettings({ textGradientEnd: e.target.value })}
+                                  className="w-8 h-8 rounded-lg border border-[#E5E5EA] cursor-pointer bg-white p-0.5"
+                                />
+                                <input
+                                  type="text"
+                                  value={settings.textGradientEnd || '#F4E8D3'}
+                                  onChange={(e) => onUpdateSettings({ textGradientEnd: e.target.value })}
+                                  className="w-full bg-white border border-[#E5E5EA] rounded-xl px-2.5 py-1 text-xs text-[#1D1D1F] font-mono focus:outline-none focus:border-[#0071E3]"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Gradient Angle Slider */}
+                          <div>
+                            <div className="flex justify-between items-center mb-1">
+                              <label className="text-[10px] font-semibold text-[#1D1D1F]">
+                                Sudut Arah Gradient (Angle):
+                              </label>
+                              <span className="text-[11px] font-mono font-bold text-[#0071E3]">
+                                {settings.textGradientAngle ?? 135}°
+                              </span>
+                            </div>
+                            <input
+                              type="range"
+                              min="0"
+                              max="360"
+                              step="15"
+                              value={settings.textGradientAngle ?? 135}
+                              onChange={(e) => onUpdateSettings({ textGradientAngle: parseInt(e.target.value, 10) })}
+                              className="w-full accent-[#0071E3] cursor-pointer"
+                            />
+                            <div className="flex justify-between text-[9px] text-[#8E8E93] mt-0.5">
+                              <span>0° (Kanan)</span>
+                              <span>90° (Atas)</span>
+                              <span>135° (Diagonal)</span>
+                              <span>180° (Kiri)</span>
+                            </div>
+                          </div>
+
+                          {/* Preset Gradients */}
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-medium text-[#8E8E93] block">Preset Kombinasi Gradient Cepat:</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {[
+                                { name: '⭐ Luxe Gold', start: '#D4AF37', end: '#F4E8D3', angle: 135 },
+                                { name: '🌸 Rose Gold', start: '#E0A96D', end: '#F7D6C8', angle: 135 },
+                                { name: '🥈 Platinum Silver', start: '#9CA3AF', end: '#FFFFFF', angle: 135 },
+                                { name: '🔥 Sunset Amber', start: '#F59E0B', end: '#EF4444', angle: 135 },
+                                { name: '💎 Royal Blue', start: '#3B82F6', end: '#93C5FD', angle: 135 },
+                              ].map((g) => (
+                                <button
+                                  key={g.name}
+                                  type="button"
+                                  onClick={() =>
+                                    onUpdateSettings({
+                                      textGradientStart: g.start,
+                                      textGradientEnd: g.end,
+                                      textGradientAngle: g.angle,
+                                    })
+                                  }
+                                  className="py-1 px-2.5 rounded-lg text-[10px] bg-white border border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA] flex items-center gap-1.5 transition cursor-pointer"
+                                >
+                                  <span
+                                    className="w-3 h-3 rounded-full border border-black/10"
+                                    style={{ background: `linear-gradient(${g.angle}deg, ${g.start}, ${g.end})` }}
+                                  />
+                                  <span>{g.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
                     {/* Live Preview Box for Text Monogram */}
                     <div className="relative p-5 rounded-xl bg-[#1C1C1E] flex flex-col items-center justify-center border border-black/10 overflow-hidden text-center">
                       <div className="absolute top-2 right-2 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-black/60 text-[#F4E8D3] border border-white/10 backdrop-blur-sm">
                         Preview Teks
                       </div>
                       <div className="py-2 flex flex-col items-center justify-center font-[Times_New_Roman,serif] italic">
-                        <span className="text-xl font-serif italic font-bold text-white tracking-wide">
+                        <span 
+                          className="text-xl font-serif italic font-bold tracking-wide"
+                          style={
+                            settings.textColorType === 'gradient'
+                              ? {
+                                  background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                  backgroundClip: 'text',
+                                  color: 'transparent',
+                                }
+                              : { color: settings.textColorSolid || '#FFFFFF' }
+                          }
+                        >
                           {settings.groomName || 'DAVID'}
                         </span>
-                        <span className="text-sm font-serif italic text-[#D4AF37] my-0.5">
+                        <span 
+                          className="text-sm font-serif italic my-0.5"
+                          style={
+                            settings.textColorType === 'gradient'
+                              ? {
+                                  background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                  backgroundClip: 'text',
+                                  color: 'transparent',
+                                }
+                              : { color: settings.textColorSolid || '#FFFFFF' }
+                          }
+                        >
                           &amp;
                         </span>
-                        <span className="text-xl font-serif italic font-bold text-white tracking-wide">
+                        <span 
+                          className="text-xl font-serif italic font-bold tracking-wide"
+                          style={
+                            settings.textColorType === 'gradient'
+                              ? {
+                                  background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                  backgroundClip: 'text',
+                                  color: 'transparent',
+                                }
+                              : { color: settings.textColorSolid || '#FFFFFF' }
+                          }
+                        >
                           {settings.brideName || 'SARAH'}
                         </span>
                         {(settings.eventSubtext || settings.eventDate) && (
-                          <span className="text-[10px] font-sans not-italic font-semibold tracking-[0.2em] text-[#E5D7C5] uppercase mt-2">
+                          <span 
+                            className="text-[10px] font-sans not-italic font-semibold tracking-[0.2em] uppercase mt-2 opacity-90"
+                            style={
+                              settings.textColorType === 'gradient'
+                                ? {
+                                    background: `linear-gradient(${settings.textGradientAngle ?? 135}deg, ${settings.textGradientStart || '#D4AF37'}, ${settings.textGradientEnd || '#F4E8D3'})`,
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    backgroundClip: 'text',
+                                    color: 'transparent',
+                                  }
+                                : { color: settings.textColorSolid || '#FFFFFF' }
+                            }
+                          >
                             {settings.eventSubtext || settings.eventDate}
                           </span>
                         )}

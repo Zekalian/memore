@@ -11,6 +11,11 @@ interface EventHeaderProps {
   brideName?: string;
   eventSubtext?: string;
   eventDate?: string;
+  textColorType?: 'solid' | 'gradient';
+  textColorSolid?: string;
+  textGradientStart?: string;
+  textGradientEnd?: string;
+  textGradientAngle?: number;
   onOpenSettings: () => void;
   isRecording?: boolean;
   recordingSeconds?: number;
@@ -28,6 +33,11 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   brideName = 'SARAH',
   eventSubtext = 'THE WEDDING CELEBRATION',
   eventDate = '',
+  textColorType = 'solid',
+  textColorSolid = '#FFFFFF',
+  textGradientStart = '#D4AF37',
+  textGradientEnd = '#F4E8D3',
+  textGradientAngle = 135,
   onOpenSettings,
   isRecording = false,
   recordingSeconds = 0,
@@ -36,6 +46,24 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
 }) => {
   const [logoLoadFailed, setLogoLoadFailed] = useState(false);
   const [bannerLoadFailed, setBannerLoadFailed] = useState(false);
+
+  const getTextStyle = (): React.CSSProperties => {
+    if (textColorType === 'gradient') {
+      const angle = textGradientAngle ?? 135;
+      const start = textGradientStart || '#D4AF37';
+      const end = textGradientEnd || '#F4E8D3';
+      return {
+        background: `linear-gradient(${angle}deg, ${start}, ${end})`,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        color: 'transparent',
+      };
+    }
+    return {
+      color: textColorSolid || '#FFFFFF',
+    };
+  };
 
   // Apple-grade Logo Container (No squished oval egg! Uses squircle rounded-2xl)
   const getLogoContainerClass = () => {
@@ -121,17 +149,29 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
             >
               {headerType === 'text' ? (
                 <div className="flex flex-col items-center justify-center text-center font-[Times_New_Roman,serif] italic leading-tight">
-                  <span className="text-xl sm:text-2xl md:text-[26px] font-serif italic font-bold text-white tracking-wide">
+                  <span 
+                    className="text-xl sm:text-2xl md:text-[26px] font-serif italic font-bold tracking-wide"
+                    style={getTextStyle()}
+                  >
                     {groomName || 'DAVID'}
                   </span>
-                  <span className="text-xs sm:text-sm font-serif italic text-[#D4AF37] my-0.5">
+                  <span 
+                    className="text-xs sm:text-sm font-serif italic my-0.5"
+                    style={getTextStyle()}
+                  >
                     &amp;
                   </span>
-                  <span className="text-xl sm:text-2xl md:text-[26px] font-serif italic font-bold text-white tracking-wide">
+                  <span 
+                    className="text-xl sm:text-2xl md:text-[26px] font-serif italic font-bold tracking-wide"
+                    style={getTextStyle()}
+                  >
                     {brideName || 'SARAH'}
                   </span>
                   {(eventSubtext || eventDate) && (
-                    <span className="text-[10px] sm:text-xs font-sans not-italic font-semibold tracking-[0.2em] text-[#E5D7C5] uppercase mt-1">
+                    <span 
+                      className="text-[10px] sm:text-xs font-sans not-italic font-semibold tracking-[0.2em] uppercase mt-1 opacity-90"
+                      style={getTextStyle()}
+                    >
                       {eventSubtext || eventDate}
                     </span>
                   )}
@@ -255,17 +295,29 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
             >
               {headerType === 'text' ? (
                 <div className="flex flex-col items-center justify-center text-center font-[Times_New_Roman,serif] italic leading-tight">
-                  <span className="text-xl sm:text-2xl font-serif italic font-bold text-white tracking-wide">
+                  <span 
+                    className="text-xl sm:text-2xl font-serif italic font-bold tracking-wide"
+                    style={getTextStyle()}
+                  >
                     {groomName || 'DAVID'}
                   </span>
-                  <span className="text-xs sm:text-sm font-serif italic text-[#D4AF37] my-0.5">
+                  <span 
+                    className="text-xs sm:text-sm font-serif italic my-0.5"
+                    style={getTextStyle()}
+                  >
                     &amp;
                   </span>
-                  <span className="text-xl sm:text-2xl font-serif italic font-bold text-white tracking-wide">
+                  <span 
+                    className="text-xl sm:text-2xl font-serif italic font-bold tracking-wide"
+                    style={getTextStyle()}
+                  >
                     {brideName || 'SARAH'}
                   </span>
                   {(eventSubtext || eventDate) && (
-                    <span className="text-[10px] sm:text-xs font-sans not-italic font-semibold tracking-[0.2em] text-[#E5D7C5] uppercase mt-1">
+                    <span 
+                      className="text-[10px] sm:text-xs font-sans not-italic font-semibold tracking-[0.2em] uppercase mt-1 opacity-90"
+                      style={getTextStyle()}
+                    >
                       {eventSubtext || eventDate}
                     </span>
                   )}

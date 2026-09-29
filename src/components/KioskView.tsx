@@ -11,11 +11,9 @@ import {
 import { KioskState, KioskSettings, VideoRecord } from '../types';
 import { playCountdownBeep, playVintageClick } from '../services/audio';
 import { 
-  saveRecording, 
   saveRecoverySession, 
   clearRecoverySession, 
-  generateVideoThumbnail, 
-  getStorageStats 
+  generateVideoThumbnail 
 } from '../services/db';
 import { EventHeader } from './EventHeader';
 import { WelcomeScreen } from './WelcomeScreen';
@@ -514,11 +512,9 @@ export const KioskView: React.FC<KioskViewProps> = ({
           const thumbnailUrl = await generateVideoThumbnail(blob);
           const fullRecord = { ...initialRecord, thumbnailUrl };
           setLastSavedRecord(fullRecord);
-          await saveRecording(fullRecord);
           await clearRecoverySession();
-          await getStorageStats();
         } catch (dbErr) {
-          console.warn('[Memore DB] Background record save error:', dbErr);
+          console.warn('[Memore DB] Background cleanup error:', dbErr);
         }
       })();
 

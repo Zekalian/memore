@@ -6,7 +6,8 @@ import { KioskSettings, VideoRecord } from './types';
 import { 
   getAllRecordings, 
   getRecoverySession, 
-  clearRecoverySession
+  clearRecoverySession,
+  clearAllRecordings
 } from './services/db';
 
 const DEFAULT_SETTINGS: KioskSettings = {
@@ -106,18 +107,18 @@ export default function App() {
     };
   }, [selectedDeviceId, selectedAudioDeviceId, settings.selectedAudioDeviceId]);
 
-  // Silently check and clear disaster recovery session on startup without showing UI prompt
+  // Silently check and clear disaster recovery session & old IndexedDB recordings on startup to keep storage clean
   useEffect(() => {
-    async function checkRecovery() {
+    async function checkRecoveryAndCleanStorage() {
       try {
+        await clearAllRecordings();
         const session = await getRecoverySession();
         if (session) {
           await clearRecoverySession();
         }
       } catch {}
     }
-    checkRecovery();
-    loadAllRecordings();
+    checkRecoveryAndCleanStorage();
   }, []);
 
   const loadAllRecordings = useCallback(async () => {

@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, 
-  HardDrive, 
-  Trash2, 
-  Download, 
-  Play, 
   Sliders, 
-  AlertTriangle, 
   Camera, 
-  FileVideo, 
   Upload, 
   Image as ImageIcon, 
   RotateCcw,
@@ -20,16 +14,15 @@ import {
   CheckCircle2,
   Smartphone
 } from 'lucide-react';
-import { KioskSettings, VideoRecord, StorageStats, getTextMonogramStyle } from '../types';
-import { clearAllRecordings, deleteRecording, getStorageStats } from '../services/db';
+import { KioskSettings, getTextMonogramStyle } from '../types';
 
 interface OperatorPanelProps {
   isOpen: boolean;
   onClose: () => void;
   settings: KioskSettings;
   onUpdateSettings: (newSettings: Partial<KioskSettings>) => void;
-  recordings: VideoRecord[];
-  onRefreshRecordings: () => void;
+  recordings?: unknown[];
+  onRefreshRecordings?: () => void;
   isStandalonePWA?: boolean;
   videoDevices: MediaDeviceInfo[];
   selectedDeviceId: string;
@@ -45,8 +38,6 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
   onClose,
   settings,
   onUpdateSettings,
-  recordings,
-  onRefreshRecordings,
   videoDevices,
   selectedDeviceId,
   onSelectDevice,
@@ -54,20 +45,12 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
   selectedAudioDeviceId = '',
   onSelectAudioDevice = (_deviceId: string) => {},
 }) => {
-  // Tabs: Removed SOP Kiosk as requested
-  const [activeTab, setActiveTab] = useState<'branding' | 'controls' | 'storage'>('branding');
+  // Tabs
+  const [activeTab, setActiveTab] = useState<'branding' | 'controls'>('branding');
   const [audioLevel, setAudioLevel] = useState<number>(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const [storageStats, setStorageStats] = useState<StorageStats>({
-    usedBytes: 0,
-    totalBytes: 32 * 1024 * 1024 * 1024,
-    percentUsed: 0,
-    isCritical: false,
-  });
-  const [previewRecord, setPreviewRecord] = useState<VideoRecord | null>(null);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [newPinInput, setNewPinInput] = useState('');
   const [pinSavedToast, setPinSavedToast] = useState(false);
   const [isOnline, setIsOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
@@ -91,13 +74,6 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
       setTimeout(() => setPinSavedToast(false), 3000);
     }
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      loadStorage();
-      onRefreshRecordings();
-    }
-  }, [isOpen]);
 
   // Live Audio VU Meter for Testing Selected Microphone
   useEffect(() => {
@@ -168,49 +144,6 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
     };
   }, [isOpen, activeTab, selectedAudioDeviceId]);
 
-  const loadStorage = async () => {
-    try {
-      const stats = await getStorageStats();
-      setStorageStats(stats);
-    } catch {
-      // ignore
-    }
-  };
-
-  const formatBytes = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const handleDownload = (record: VideoRecord) => {
-    const url = URL.createObjectURL(record.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = record.filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 200);
-  };
-
-  const handleDelete = async (id: string) => {
-    await deleteRecording(id);
-    await onRefreshRecordings();
-    await loadStorage();
-  };
-
-  const handleClearAll = async () => {
-    await clearAllRecordings();
-    setShowClearConfirm(false);
-    await onRefreshRecordings();
-    await loadStorage();
-  };
-
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -252,7 +185,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                 Pengaturan Memore
               </h2>
               <p className="text-xs text-[#8E8E93]">
-                Branding • Kamera &amp; Kontrol • Penyimpanan
+                Branding • Kamera &amp; Audio
               </p>
             </div>
           </div>
@@ -286,7 +219,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
               }`}
             >
               <ImageIcon className="w-3.5 h-3.5" />
-              <span>Branding (PNG)</span>
+              <span>Branding (PNG / Teks)</span>
             </button>
             <button
               onClick={() => setActiveTab('controls')}
@@ -297,18 +230,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
               }`}
             >
               <Sliders className="w-3.5 h-3.5" />
-              <span>Kamera & Audio</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('storage')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeTab === 'storage'
-                  ? 'bg-white text-[#1D1D1F] shadow-sm'
-                  : 'text-[#8E8E93] hover:text-[#1D1D1F]'
-              }`}
-            >
-              <HardDrive className="w-3.5 h-3.5" />
-              <span>Rekaman ({recordings.length})</span>
+              <span>Kamera &amp; Audio</span>
             </button>
           </div>
         </div>
@@ -1272,96 +1194,12 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
               </div>
             </div>
           )}
-
-          {/* TAB 3: STORAGE & RECORDINGS */}
-          {activeTab === 'storage' && (
-            <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-white border border-[#E5E5EA] flex items-center justify-between shadow-sm">
-                <div>
-                  <p className="text-xs text-[#8E8E93]">Penyimpanan Lokal</p>
-                  <p className="text-sm font-semibold text-[#1D1D1F]">
-                    {formatBytes(storageStats.usedBytes)} dari {formatBytes(storageStats.totalBytes)} ({storageStats.percentUsed}%)
-                  </p>
-                </div>
-                {recordings.length > 0 && (
-                  <button
-                    onClick={() => setShowClearConfirm(true)}
-                    className="px-3.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-[#FF3B30] text-xs font-semibold border border-red-100 transition cursor-pointer"
-                  >
-                    Hapus Semua
-                  </button>
-                )}
-              </div>
-
-              {recordings.length === 0 ? (
-                <div className="p-8 text-center rounded-2xl bg-white border border-[#E5E5EA] space-y-2 shadow-sm">
-                  <FileVideo className="w-8 h-8 text-[#C7C7CC] mx-auto" />
-                  <p className="text-xs text-[#8E8E93]">Belum ada video rekaman tamu.</p>
-                </div>
-              ) : (
-                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                  {recordings.map((rec) => (
-                    <div
-                      key={rec.id}
-                      className="p-3 rounded-xl bg-white border border-[#E5E5EA] flex items-center justify-between gap-3 shadow-sm hover:border-[#D1D1D6] transition"
-                    >
-                      <div className="flex items-center gap-3 overflow-hidden">
-                        {rec.thumbnailUrl ? (
-                          <img
-                            src={rec.thumbnailUrl}
-                            alt=""
-                            className="w-10 h-14 object-cover rounded-lg bg-black"
-                          />
-                        ) : (
-                          <div className="w-10 h-14 rounded-lg bg-[#F2F2F7] flex items-center justify-center text-xs">
-                            🎬
-                          </div>
-                        )}
-                        <div className="overflow-hidden">
-                          <p className="text-xs font-mono font-semibold text-[#1D1D1F] truncate">
-                            {rec.filename}
-                          </p>
-                          <p className="text-[10px] text-[#8E8E93]">
-                            {new Date(rec.timestamp).toLocaleTimeString()} • {rec.durationSec}s • {formatBytes(rec.sizeBytes)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          onClick={() => setPreviewRecord(rec)}
-                          className="p-1.5 rounded-lg bg-[#F2F2F7] hover:bg-[#E5E5EA] text-[#1D1D1F] cursor-pointer"
-                          title="Tonton"
-                        >
-                          <Play className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDownload(rec)}
-                          className="p-1.5 rounded-lg bg-[#F2F2F7] hover:bg-[#E5E5EA] text-[#1D1D1F] cursor-pointer"
-                          title="Unduh"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(rec.id)}
-                          className="p-1.5 rounded-lg hover:bg-red-50 text-[#FF3B30] cursor-pointer"
-                          title="Hapus"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-[#E5E5EA] bg-white/75 backdrop-blur-xl">
           <span className="text-[11px] text-[#8E8E93]">
-            Tersimpan otomatis di LocalStorage iPad.
+            Pengaturan tersimpan otomatis di iPad.
           </span>
           <button
             onClick={onClose}
@@ -1371,65 +1209,6 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
           </button>
         </div>
       </div>
-
-      {/* Video Preview Modal */}
-      {previewRecord && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-fade-in">
-          <div className="relative max-w-lg w-full max-h-[90vh] bg-white rounded-[32px] overflow-hidden border border-black/[0.08] shadow-2xl flex flex-col items-center text-[#1D1D1F]">
-            <div className="w-full flex items-center justify-between p-3.5 border-b border-[#E5E5EA] bg-[#F5F5F7]">
-              <span className="text-xs font-mono font-semibold text-[#1D1D1F]">
-                {previewRecord.filename}
-              </span>
-              <button
-                onClick={() => setPreviewRecord(null)}
-                className="w-7 h-7 rounded-full bg-[#E5E5EA] hover:bg-[#D1D1D6] flex items-center justify-center text-[#8E8E93] hover:text-[#1D1D1F] cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="w-full bg-black flex items-center justify-center p-2">
-              <video
-                src={URL.createObjectURL(previewRecord.blob)}
-                controls
-                autoPlay
-                playsInline
-                className="max-h-[55vh] w-auto max-w-full object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Clear All Confirmation Modal */}
-      {showClearConfirm && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-fade-in">
-          <div className="max-w-md w-full bg-white border border-red-200 rounded-[28px] p-6 space-y-4 text-center shadow-2xl text-[#1D1D1F]">
-            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto text-[#FF3B30]">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-sans font-semibold text-[#1D1D1F]">
-              Hapus Semua Rekaman?
-            </h3>
-            <p className="text-xs text-[#8E8E93] leading-relaxed">
-              Tindakan ini akan mengosongkan seluruh memori video di browser. Pastikan video penting sudah tersimpan di aplikasi Files iPad.
-            </p>
-            <div className="flex items-center gap-2 pt-2">
-              <button
-                onClick={() => setShowClearConfirm(false)}
-                className="flex-1 py-2.5 rounded-xl bg-[#F2F2F7] text-[#1D1D1F] text-xs font-medium hover:bg-[#E5E5EA] cursor-pointer"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleClearAll}
-                className="flex-1 py-2.5 rounded-xl bg-[#FF3B30] hover:bg-[#D70015] text-white text-xs font-semibold shadow-sm active:scale-95 cursor-pointer"
-              >
-                Hapus Semua
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -249,10 +249,10 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
             </div>
             <div>
               <h2 className="text-base font-sans font-semibold text-[#1D1D1F] tracking-tight">
-                Pengaturan Kiosk
+                Pengaturan Memore
               </h2>
               <p className="text-xs text-[#8E8E93]">
-                Branding • Kamera & Kontrol • Penyimpanan
+                Branding • Kamera &amp; Kontrol • Penyimpanan
               </p>
             </div>
           </div>
@@ -346,7 +346,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                 {/* Gaya Latar Kaca Logo (Apple Glass Styles) */}
                 <div className="space-y-1.5 pt-1">
                   <label className="text-[11px] font-semibold text-[#1D1D1F] block">
-                    Gaya Latar Logo di Layar Kiosk:
+                    Gaya Latar Logo di Layar:
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     <button
@@ -435,7 +435,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                   <div className="absolute top-2 right-2 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-black/60 text-[#F4E8D3] border border-white/10 backdrop-blur-sm z-10">
                     Preview (320 × 100 px)
                   </div>
-                  <div className="text-[10px] text-white/50 mb-2 font-mono">Tampilan Di Layar Kiosk:</div>
+                  <div className="text-[10px] text-white/50 mb-2 font-mono">Tampilan Di Layar:</div>
                   <div className={`p-2.5 rounded-2xl flex items-center justify-center transition-all ${
                     (settings.logoBackgroundStyle || 'light') === 'light'
                       ? 'bg-white/95 border border-white shadow-lg'

@@ -112,7 +112,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
               <div 
                 onClick={onOpenSettings}
                 className={getLogoContainerClass()}
-                title="Pengaturan Kiosk / Ganti Logo"
+                title="Pengaturan Memore / Ganti Logo"
               >
                 {!logoLoadFailed && businessLogoUrl ? (
                   <img
@@ -231,7 +231,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
               <div 
                 onClick={onOpenSettings}
                 className={getLogoContainerClass()}
-                title="Pengaturan Kiosk / Ganti Logo"
+                title="Pengaturan Memore / Ganti Logo"
               >
                 {!logoLoadFailed && businessLogoUrl ? (
                   <img

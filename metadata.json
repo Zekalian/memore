@@ -1,6 +1,6 @@
 {
-  "name": "Memore Audio Guestbook - Video Companion",
-  "description": "Touchless portrait video companion kiosk for Memore Audio Guestbook with face detection, authentic raw audio, and instant auto-download.",
+  "name": "Memore",
+  "description": "Memore - Interactive Video Guestbook",
   "requestFramePermissions": ["camera", "microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

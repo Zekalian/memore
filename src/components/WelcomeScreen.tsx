@@ -51,7 +51,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         <div 
           onClick={onOpenSettings}
           className="cursor-pointer group flex items-center justify-center bg-white/95 hover:bg-white backdrop-blur-2xl border border-white/80 shadow-[0_8px_28px_rgba(0,0,0,0.22)] rounded-2xl px-4 py-2 transition-all duration-200 active:scale-95"
-          title="Pengaturan Kiosk (Perlu PIN)"
+          title="Pengaturan Memore (Perlu PIN)"
         >
           {!logoLoadFailed && settings.businessLogoUrl ? (
             <img
@@ -82,7 +82,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           <button
             onClick={onOpenSettings}
             className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-2xl border border-white/20 text-white flex items-center justify-center transition-all duration-200 active:scale-90 shadow-md cursor-pointer"
-            title="Pengaturan Kiosk (Terkunci PIN)"
+            title="Pengaturan Memore (Terkunci PIN)"
           >
             <Sliders className="w-4 h-4 text-white/90" />
           </button>

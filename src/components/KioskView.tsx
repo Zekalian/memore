@@ -256,47 +256,56 @@ export const KioskView: React.FC<KioskViewProps> = ({
     };
   }, []);
 
-  // Initiate Recording Session (Opens Sender Name Modal or Starts Directly)
+  // Step 1: Initiate Session from Welcome Screen
   const handleInitiateSession = () => {
     playVintageClick();
     if (settingsRef.current.promptSenderName !== false) {
-      setSenderNameInput('');
+      setSenderNameInput(activeSenderNameRef.current || '');
       setShowSenderModal(true);
     } else {
-      executeStartRecording('');
+      if (state === 'WELCOME') {
+        setState('STANDBY');
+      }
     }
   };
 
+  // Step 2: Confirm Sender Name -> Close Modal & Transition to STANDBY Camera Preview (No auto-recording!)
   const handleConfirmSenderName = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     playVintageClick();
+    activeSenderNameRef.current = senderNameInput.trim();
     setShowSenderModal(false);
-    executeStartRecording(senderNameInput);
+    if (state === 'WELCOME') {
+      setState('STANDBY');
+    }
   };
 
   const handleSkipSenderName = () => {
     playVintageClick();
+    activeSenderNameRef.current = '';
     setShowSenderModal(false);
-    executeStartRecording('');
-  };
-
-  const executeStartRecording = (name: string) => {
-    activeSenderNameRef.current = name.trim();
-    sessionStartTimeRef.current = Date.now();
-    recordedChunksRef.current = [];
-
     if (state === 'WELCOME') {
       setState('STANDBY');
     }
+  };
+
+  // Step 3: MANUAL START via Apple Camera Shutter Ring Button
+  const handleStartManual = () => {
+    if (state !== 'STANDBY') return;
+    playVintageClick();
+
+    // If sender prompt is enabled and no name is set yet, prompt modal first
+    if (settingsRef.current.promptSenderName !== false && !activeSenderNameRef.current && !showSenderModal) {
+      setSenderNameInput('');
+      setShowSenderModal(true);
+      return;
+    }
+
+    sessionStartTimeRef.current = Date.now();
+    recordedChunksRef.current = [];
 
     startMediaRecorder();
     startCountdown();
-  };
-
-  // MANUAL START (Dipencet Baru Mulai)
-  const handleStartManual = () => {
-    if (state !== 'STANDBY') return;
-    handleInitiateSession();
   };
 
   const startCountdown = () => {
@@ -716,6 +725,20 @@ export const KioskView: React.FC<KioskViewProps> = ({
           {/* STANDBY GENTLE PROMPT */}
           {state === 'STANDBY' && (
             <div className="flex flex-col items-center gap-3 pointer-events-auto animate-fade-in">
+              {activeSenderNameRef.current && (
+                <button
+                  onClick={() => {
+                    setSenderNameInput(activeSenderNameRef.current);
+                    setShowSenderModal(true);
+                  }}
+                  className="px-4 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-2xl border border-white/30 text-white text-xs font-sans font-semibold tracking-wide shadow-xl flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
+                  title="Ketuk untuk ubah nama pengirim"
+                >
+                  <User className="w-3.5 h-3.5 text-[#0071E3]" />
+                  <span>Pesan dari: <strong>{activeSenderNameRef.current}</strong></span>
+                  <span className="text-[10px] opacity-75 font-normal ml-1">(Ubah)</span>
+                </button>
+              )}
               <div className="px-5 py-2 rounded-full bg-black/40 backdrop-blur-2xl border border-white/20 text-white text-xs font-sans font-medium tracking-wide shadow-xl">
                 Silakan berdiri di depan kamera &amp; siap merekam
               </div>
@@ -1003,7 +1026,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
                   type="submit"
                   className="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0077ED] active:scale-95 text-white text-xs font-sans font-bold shadow-lg shadow-[#0071E3]/25 flex items-center justify-center gap-2 transition cursor-pointer"
                 >
-                  <span>Mulai Rekam Pesan</span>
+                  <span>Lanjutkan ke Kamera</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 

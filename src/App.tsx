@@ -50,6 +50,7 @@ const DEFAULT_SETTINGS: KioskSettings = {
   targetBitrate: 6000000, // 6.0 Mbps for studio-crisp 1080p/720p HD
   videoQualityPreset: '1080p',
   autoDownload: true,
+  promptSenderName: true,
   audioVolume: 1.0,
   customGreetingUrl: null,
 };

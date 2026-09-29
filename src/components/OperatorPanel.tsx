@@ -920,6 +920,30 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                   </button>
                 </div>
 
+                {/* Prompt Sender Name Toggle */}
+                <div className="p-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-[#1D1D1F] block">
+                      Pop-Up Nama Pengirim Pesan (Sender Name)
+                    </span>
+                    <span className="text-[11px] text-[#8E8E93]">
+                      Minta nama sebelum rekam untuk format file Memore_(Nama)_(JamMenit)
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => onUpdateSettings({ promptSenderName: settings.promptSenderName === false ? true : false })}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition cursor-pointer ${
+                      settings.promptSenderName !== false ? 'bg-[#34C759]' : 'bg-[#E5E5EA]'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
+                        settings.promptSenderName !== false ? 'translate-x-5' : 'translate-x-0.5'
+                      }`}
+                    />
+                  </button>
+                </div>
+
                 {/* Countdown Slider */}
                 <div className="p-4 space-y-2">
                   <div className="flex items-center justify-between">

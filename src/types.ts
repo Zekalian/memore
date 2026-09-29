@@ -72,6 +72,7 @@ export interface KioskSettings {
   targetBitrate: number; // default 6,000,000 bps (6 Mbps for 1080p)
   videoQualityPreset?: '1080p' | '720p' | 'eco'; // default '1080p'
   autoDownload: boolean; // default true
+  promptSenderName?: boolean; // default true: pop up nama pengirim sebelum rekam
   audioVolume: number; // default 1.0
   customGreetingUrl?: string | null;
 }

@@ -695,7 +695,8 @@ export const KioskView: React.FC<KioskViewProps> = ({
         */}
         <EventHeader
           businessLogoUrl={settings.businessLogoUrl}
-          logoBackgroundStyle={settings.logoBackgroundStyle || 'light'}
+          logoBackgroundStyle={settings.logoBackgroundStyle || 'transparent'}
+          logoRemoveBlackBackground={settings.logoRemoveBlackBackground}
           headerType={settings.headerType}
           eventBannerUrl={settings.eventBannerUrl}
           eventName={settings.eventName}

@@ -5,6 +5,7 @@ import { getTextMonogramStyle } from '../types';
 interface EventHeaderProps {
   businessLogoUrl?: string;
   logoBackgroundStyle?: 'light' | 'transparent' | 'dark';
+  logoRemoveBlackBackground?: boolean;
   headerType?: 'image' | 'text';
   eventBannerUrl?: string;
   eventName?: string;
@@ -26,7 +27,8 @@ interface EventHeaderProps {
 
 export const EventHeader: React.FC<EventHeaderProps> = ({
   businessLogoUrl = '/business-logo-placeholder.png',
-  logoBackgroundStyle = 'light',
+  logoBackgroundStyle = 'transparent',
+  logoRemoveBlackBackground = false,
   headerType = 'image',
   eventBannerUrl = '/event-title-placeholder.png',
   eventName = 'The Wedding Celebration',
@@ -58,29 +60,29 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
     });
   };
 
-  // Apple-grade Logo Container (No squished oval egg! Uses squircle rounded-2xl)
+  // Apple-grade Logo Container (No squished oval egg! Uses squircle rounded-2xl or transparent)
   const getLogoContainerClass = () => {
     switch (logoBackgroundStyle) {
-      case 'transparent':
-        return 'cursor-pointer group flex items-center justify-center bg-transparent hover:bg-white/10 rounded-2xl px-2.5 py-1.5 transition-all duration-200 active:scale-95';
       case 'dark':
-        return 'cursor-pointer group flex items-center justify-center bg-black/65 hover:bg-black/80 backdrop-blur-2xl border border-white/20 shadow-xl rounded-2xl px-3.5 py-1.5 sm:px-4 sm:py-2 transition-all duration-200 active:scale-95';
+        return 'cursor-pointer group flex items-center justify-center bg-black/60 hover:bg-black/75 backdrop-blur-2xl border border-white/20 shadow-xl rounded-2xl px-3.5 py-1.5 sm:px-4 sm:py-2 transition-all duration-200 active:scale-95';
       case 'light':
-      default:
-        // Luminous Warm-White Glass: makes colored (blue/black) logos ultra-vibrant, sharp & luxurious
         return 'cursor-pointer group flex items-center justify-center bg-white/95 hover:bg-white backdrop-blur-2xl border border-white/80 shadow-[0_8px_28px_rgba(0,0,0,0.18)] rounded-2xl px-3.5 py-1.5 sm:px-4 sm:py-2 transition-all duration-200 active:scale-95';
+      case 'transparent':
+      default:
+        // Pure borderless floating logo: No white box, no striped borders!
+        return 'cursor-pointer group flex items-center justify-center bg-transparent hover:opacity-85 rounded-2xl p-1 transition-all duration-200 active:scale-95';
     }
   };
 
   const getLogoImageClass = (isLand: boolean) => {
     const size = isLand
-      ? 'max-h-9 sm:max-h-11 max-w-[125px] sm:max-w-[150px]'
-      : 'max-h-8 sm:max-h-10 max-w-[110px] sm:max-w-[130px]';
-    return `${size} w-auto h-auto object-contain transition-transform duration-200 ${
-      logoBackgroundStyle === 'light'
-        ? 'filter drop-shadow-sm'
-        : 'filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] brightness-105'
-    }`;
+      ? 'max-h-9 sm:max-h-11 max-w-[130px] sm:max-w-[160px]'
+      : 'max-h-8 sm:max-h-10 max-w-[115px] sm:max-w-[140px]';
+    const blendClass = logoRemoveBlackBackground ? 'mix-blend-screen' : '';
+    const shadowClass = logoBackgroundStyle === 'light'
+      ? 'filter drop-shadow-sm'
+      : 'filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] brightness-105';
+    return `${size} w-auto h-auto object-contain transition-transform duration-200 ${shadowClass} ${blendClass}`;
   };
 
   return (

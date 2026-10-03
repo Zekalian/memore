@@ -45,7 +45,9 @@ export interface KioskSettings {
 
   // Visual Assets & Placeholders (Customizable & LocalStorage persisted)
   businessLogoUrl: string; // Placeholder PNG for business logo
-  logoBackgroundStyle?: 'light' | 'transparent' | 'dark'; // 'light' (Kaca Putih Bersih Apple), 'transparent', 'dark'
+  logoBackgroundStyle?: 'light' | 'transparent' | 'dark'; // 'transparent' (Melayang tanpa kotak, default), 'dark', 'light'
+  logoBackgroundCustomized?: boolean; // True if operator manually chose background style
+  logoRemoveBlackBackground?: boolean; // Hilangkan kotak hitam otomatis (mix-blend-screen)
   headerType?: 'image' | 'text'; // 'image' (PNG 800x400) or 'text' (Times New Roman Italic)
   eventBannerUrl: string; // Placeholder PNG for event name at upper-center (800x400)
   eventName: string; // Text fallback if banner image is not used

@@ -21,6 +21,25 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
   const textStyle = getTextMonogramStyle(settings);
 
+  const getLogoContainerClass = () => {
+    switch (settings.logoBackgroundStyle) {
+      case 'dark':
+        return 'cursor-pointer group flex items-center justify-center bg-black/60 hover:bg-black/75 backdrop-blur-2xl border border-white/20 shadow-xl rounded-2xl px-3.5 py-1.5 transition-all duration-200 active:scale-95';
+      case 'light':
+        return 'cursor-pointer group flex items-center justify-center bg-white/95 hover:bg-white backdrop-blur-2xl border border-white/80 shadow-[0_8px_28px_rgba(0,0,0,0.18)] rounded-2xl px-3.5 py-1.5 transition-all duration-200 active:scale-95';
+      case 'transparent':
+      default:
+        // Pure borderless floating logo: No white box, no striped borders!
+        return 'cursor-pointer group flex items-center justify-center bg-transparent hover:opacity-85 rounded-2xl p-1 transition-all duration-200 active:scale-95';
+    }
+  };
+
+  const getLogoImageClass = () => {
+    const blendClass = settings.logoRemoveBlackBackground ? 'mix-blend-screen' : '';
+    const shadowClass = settings.logoBackgroundStyle === 'light' ? 'filter drop-shadow-sm' : 'filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]';
+    return `max-h-9 sm:max-h-11 max-w-[130px] sm:max-w-[160px] w-auto h-auto object-contain transition-transform duration-200 ${shadowClass} ${blendClass}`;
+  };
+
   const handleStart = () => {
     playVintageClick();
     onStartSession();
@@ -47,10 +66,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <header className={`relative z-20 w-full flex items-center justify-between ${
         isLandscape ? 'pt-5 px-8' : 'pt-6 px-6'
       }`}>
-        {/* Business Logo (Apple Squircle Glass) */}
+        {/* Business Logo (Apple Dynamic Glass or Transparent) */}
         <div 
           onClick={onOpenSettings}
-          className="cursor-pointer group flex items-center justify-center bg-white/95 hover:bg-white backdrop-blur-2xl border border-white/80 shadow-[0_8px_28px_rgba(0,0,0,0.22)] rounded-2xl px-4 py-2 transition-all duration-200 active:scale-95"
+          className={getLogoContainerClass()}
           title="Pengaturan Memore (Perlu PIN)"
         >
           {!logoLoadFailed && settings.businessLogoUrl ? (
@@ -58,12 +77,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               src={settings.businessLogoUrl}
               alt="Logo Usaha"
               onError={() => setLogoLoadFailed(true)}
-              className="max-h-9 sm:max-h-11 max-w-[130px] sm:max-w-[150px] w-auto h-auto object-contain filter drop-shadow-sm"
+              className={getLogoImageClass()}
             />
           ) : (
             <div className="flex items-center gap-2 py-0.5">
               <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
-              <span className="text-[11px] font-sans font-semibold tracking-wider text-[#1D1D1F] uppercase">
+              <span className={`text-[11px] font-sans font-semibold tracking-wider uppercase ${
+                settings.logoBackgroundStyle === 'light' ? 'text-[#1D1D1F]' : 'text-white'
+              }`}>
                 LOGO USAHA
               </span>
             </div>

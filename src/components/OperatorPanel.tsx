@@ -288,21 +288,9 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
-                      onClick={() => onUpdateSettings({ logoBackgroundStyle: 'light' })}
+                      onClick={() => onUpdateSettings({ logoBackgroundStyle: 'transparent', logoBackgroundCustomized: true })}
                       className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-semibold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer active:scale-95 ${
-                        (settings.logoBackgroundStyle || 'light') === 'light'
-                          ? 'bg-[#0071E3] border-[#0071E3] text-white shadow-sm'
-                          : 'bg-[#F2F2F7] border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA]'
-                      }`}
-                    >
-                      <span>⚪ Kaca Putih</span>
-                      <span className="text-[9px] opacity-80 font-normal">Kontras Tinggi (Biru/Gelap)</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onUpdateSettings({ logoBackgroundStyle: 'transparent' })}
-                      className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-semibold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer active:scale-95 ${
-                        settings.logoBackgroundStyle === 'transparent'
+                        (settings.logoBackgroundStyle || 'transparent') === 'transparent'
                           ? 'bg-[#0071E3] border-[#0071E3] text-white shadow-sm'
                           : 'bg-[#F2F2F7] border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA]'
                       }`}
@@ -312,7 +300,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => onUpdateSettings({ logoBackgroundStyle: 'dark' })}
+                      onClick={() => onUpdateSettings({ logoBackgroundStyle: 'dark', logoBackgroundCustomized: true })}
                       className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-semibold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer active:scale-95 ${
                         settings.logoBackgroundStyle === 'dark'
                           ? 'bg-[#0071E3] border-[#0071E3] text-white shadow-sm'
@@ -320,9 +308,39 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                       }`}
                     >
                       <span>⚫ Kaca Obsidian</span>
-                      <span className="text-[9px] opacity-80 font-normal">Gelap (Khusus Logo Putih)</span>
+                      <span className="text-[9px] opacity-80 font-normal">Gelap Minimalis</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onUpdateSettings({ logoBackgroundStyle: 'light', logoBackgroundCustomized: true })}
+                      className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-semibold flex flex-col items-center justify-center gap-0.5 transition cursor-pointer active:scale-95 ${
+                        settings.logoBackgroundStyle === 'light'
+                          ? 'bg-[#0071E3] border-[#0071E3] text-white shadow-sm'
+                          : 'bg-[#F2F2F7] border-[#E5E5EA] text-[#1D1D1F] hover:bg-[#E5E5EA]'
+                      }`}
+                    >
+                      <span>⚪ Kaca Putih</span>
+                      <span className="text-[9px] opacity-80 font-normal">Khusus Logo Berwarna Hitam</span>
                     </button>
                   </div>
+                </div>
+
+                {/* Opsi Hilangkan Background Kotak Hitam (Screen Blend Mode) */}
+                <div className="p-3 rounded-xl bg-[#F2F2F7] border border-[#E5E5EA] flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-semibold text-[#1D1D1F]">
+                      Hilangkan Kotak Hitam (Screen Blend)
+                    </div>
+                    <div className="text-[11px] text-[#8E8E93] leading-relaxed">
+                      Aktifkan jika file logo Anda memiliki latar belakang hitam pekat agar otomatis menjadi transparan murni.
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={settings.logoRemoveBlackBackground ?? false}
+                    onChange={(e) => onUpdateSettings({ logoRemoveBlackBackground: e.target.checked })}
+                    className="w-5 h-5 rounded accent-[#0071E3] cursor-pointer shrink-0"
+                  />
                 </div>
 
                 {/* Preview Box with Pixel Dimensions Badge & Live Style Demonstration */}
@@ -332,7 +350,7 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                   </div>
                   <div className="text-[10px] text-white/50 mb-2 font-mono">Tampilan Di Layar:</div>
                   <div className={`p-2.5 rounded-2xl flex items-center justify-center transition-all ${
-                    (settings.logoBackgroundStyle || 'light') === 'light'
+                    settings.logoBackgroundStyle === 'light'
                       ? 'bg-white/95 border border-white shadow-lg'
                       : settings.logoBackgroundStyle === 'dark'
                       ? 'bg-black/70 border border-white/20 shadow-lg'
@@ -342,12 +360,44 @@ export const OperatorPanel: React.FC<OperatorPanelProps> = ({
                       <img
                         src={settings.businessLogoUrl}
                         alt="Logo Preview"
-                        className="max-h-12 max-w-[200px] object-contain drop-shadow"
+                        className={`max-h-12 max-w-[200px] object-contain drop-shadow ${
+                          settings.logoRemoveBlackBackground ? 'mix-blend-screen' : ''
+                        }`}
                       />
                     ) : (
                       <span className="text-xs text-stone-400">Tidak ada logo</span>
                     )}
                   </div>
+                </div>
+
+                {/* Quick Presets for Official Memoré Logos */}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdateSettings({
+                        businessLogoUrl: '/logo-white.png',
+                        logoBackgroundStyle: 'transparent',
+                        logoRemoveBlackBackground: false,
+                      })
+                    }
+                    className="flex-1 py-2 px-3 rounded-xl bg-white hover:bg-stone-50 border border-[#E5E5EA] text-[11px] font-sans font-semibold text-[#1D1D1F] transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <span>✦ Pasang Logo Memoré Putih Resmi</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdateSettings({
+                        businessLogoUrl: '/logo-blue.png',
+                        logoBackgroundStyle: 'light',
+                        logoRemoveBlackBackground: false,
+                      })
+                    }
+                    className="flex-1 py-2 px-3 rounded-xl bg-white hover:bg-stone-50 border border-[#E5E5EA] text-[11px] font-sans font-semibold text-[#0071E3] transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <span>✦ Pasang Logo Memoré Biru</span>
+                  </button>
                 </div>
 
                 {/* Upload Action */}

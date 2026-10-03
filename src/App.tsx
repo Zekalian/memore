@@ -25,7 +25,8 @@ const DEFAULT_SETTINGS: KioskSettings = {
 
   // Visual Assets & Custom PNG Placeholders
   businessLogoUrl: '/business-logo-placeholder.png',
-  logoBackgroundStyle: 'light',
+  logoBackgroundStyle: 'transparent',
+  logoRemoveBlackBackground: false,
   headerType: 'image',
   eventBannerUrl: '/event-title-placeholder.png',
   eventName: 'The Wedding Celebration',
@@ -59,7 +60,15 @@ export default function App() {
   const [settings, setSettings] = useState<KioskSettings>(() => {
     try {
       const saved = localStorage.getItem('memore_kiosk_settings');
-      return saved ? { ...DEFAULT_SETTINGS, ...JSON.parse(saved) } : DEFAULT_SETTINGS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Automatic fix: Migrate legacy 'light' (which created the white box) to clean 'transparent'
+        if (parsed.logoBackgroundStyle === 'light' && !parsed.logoBackgroundCustomized) {
+          parsed.logoBackgroundStyle = 'transparent';
+        }
+        return { ...DEFAULT_SETTINGS, ...parsed };
+      }
+      return DEFAULT_SETTINGS;
     } catch {
       return DEFAULT_SETTINGS;
     }

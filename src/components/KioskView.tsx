@@ -80,6 +80,8 @@ export const KioskView: React.FC<KioskViewProps> = ({
   const initIdRef = useRef<number>(0);
   const recordCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const renderLoopRef = useRef<number | null>(null);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
+  const recordingAudioContextRef = useRef<AudioContext | null>(null);
 
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -231,6 +233,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
   useEffect(() => {
     return () => {
       isUnmountingRef.current = true;
+      cleanupRecordingTracks();
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
@@ -289,6 +292,29 @@ export const KioskView: React.FC<KioskViewProps> = ({
     }
   };
 
+  const cleanupRecordingTracks = () => {
+    if (renderLoopRef.current) {
+      cancelAnimationFrame(renderLoopRef.current);
+      renderLoopRef.current = null;
+    }
+    if (recordingStreamRef.current) {
+      recordingStreamRef.current.getTracks().forEach((track) => {
+        if (!streamRef.current || !streamRef.current.getTracks().includes(track)) {
+          try {
+            track.stop();
+          } catch {}
+        }
+      });
+      recordingStreamRef.current = null;
+    }
+    if (recordingAudioContextRef.current) {
+      try {
+        recordingAudioContextRef.current.close().catch(() => {});
+      } catch {}
+      recordingAudioContextRef.current = null;
+    }
+  };
+
   // Step 3: MANUAL START via Apple Camera Shutter Ring Button
   const handleStartManual = () => {
     if (state !== 'STANDBY') return;
@@ -301,10 +327,6 @@ export const KioskView: React.FC<KioskViewProps> = ({
       return;
     }
 
-    sessionStartTimeRef.current = Date.now();
-    recordedChunksRef.current = [];
-
-    startMediaRecorder();
     startCountdown();
   };
 
@@ -323,6 +345,9 @@ export const KioskView: React.FC<KioskViewProps> = ({
         clearInterval(interval);
         playCountdownBeep(true);
         setState('RECORDING');
+        sessionStartTimeRef.current = Date.now();
+        recordedChunksRef.current = [];
+        startMediaRecorder();
         startRecordingTimer();
       }
     }, 1000);
@@ -330,6 +355,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
 
   const startMediaRecorder = () => {
     if (!streamRef.current) return;
+    cleanupRecordingTracks();
     recordedChunksRef.current = [];
 
     let mimeType = 'video/mp4;codecs=avc1';
@@ -369,11 +395,6 @@ export const KioskView: React.FC<KioskViewProps> = ({
     canvas.height = targetH;
     const ctx = canvas.getContext('2d', { alpha: false });
 
-    if (renderLoopRef.current) {
-      cancelAnimationFrame(renderLoopRef.current);
-      renderLoopRef.current = null;
-    }
-
     const video = videoRef.current;
     const drawCanvasFrame = () => {
       if (video && ctx && video.videoWidth > 0 && video.videoHeight > 0) {
@@ -412,17 +433,36 @@ export const KioskView: React.FC<KioskViewProps> = ({
     let streamToRecord: MediaStream = streamRef.current;
     if (typeof canvas.captureStream === 'function') {
       try {
-        const canvasStream = canvas.captureStream(60);
+        // 30 FPS: Smooth broadcast quality while keeping iPad cool and battery efficient
+        const canvasStream = canvas.captureStream(30);
         const canvasVideoTrack = canvasStream.getVideoTracks()[0];
         if (canvasVideoTrack) {
           const combinedTracks: MediaStreamTrack[] = [canvasVideoTrack];
           if (streamRef.current) {
-            const audioTracks = streamRef.current.getAudioTracks();
-            if (audioTracks.length > 0) {
-              combinedTracks.push(audioTracks[0]);
+            // SYNCHRONIZED FRESH AUDIO TRACK:
+            // Route through AudioContext destination node to ensure start PTS begins strictly at t = 0.00s!
+            // Eliminates the Safari AVFoundation 3-hour timestamp drift bug!
+            try {
+              const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+              const recAudioCtx = new AudioContextClass();
+              recordingAudioContextRef.current = recAudioCtx;
+              const source = recAudioCtx.createMediaStreamSource(streamRef.current);
+              const dest = recAudioCtx.createMediaStreamDestination();
+              source.connect(dest);
+              const freshAudioTrack = dest.stream.getAudioTracks()[0];
+              if (freshAudioTrack) {
+                combinedTracks.push(freshAudioTrack);
+              }
+            } catch (audioSyncErr) {
+              console.warn('Audio sync routing failed, fallback to raw track:', audioSyncErr);
+              const rawAudioTracks = streamRef.current.getAudioTracks();
+              if (rawAudioTracks.length > 0) {
+                combinedTracks.push(rawAudioTracks[0]);
+              }
             }
           }
           streamToRecord = new MediaStream(combinedTracks);
+          recordingStreamRef.current = streamToRecord;
         }
       } catch (streamErr) {
         console.warn('Canvas stream composition failed, fallback to camera stream:', streamErr);
@@ -448,10 +488,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
       };
 
       recorder.onstop = () => {
-        if (renderLoopRef.current) {
-          cancelAnimationFrame(renderLoopRef.current);
-          renderLoopRef.current = null;
-        }
+        cleanupRecordingTracks();
         processAndSaveVideo(mimeType);
       };
 
@@ -459,6 +496,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
       mediaRecorderRef.current = recorder;
     } catch (err) {
       console.error('MediaRecorder initialization failed:', err);
+      cleanupRecordingTracks();
     }
   };
 
@@ -485,10 +523,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
       recordingTimerRef.current = null;
     }
 
-    if (renderLoopRef.current) {
-      cancelAnimationFrame(renderLoopRef.current);
-      renderLoopRef.current = null;
-    }
+    cleanupRecordingTracks();
 
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       setState('SAVING');
@@ -518,11 +553,16 @@ export const KioskView: React.FC<KioskViewProps> = ({
     isProcessingVideoRef.current = true;
     try {
       const chunks = [...recordedChunksRef.current];
-      const duration = recordingSeconds || Math.max(1, Math.round((Date.now() - sessionStartTimeRef.current) / 1000));
+      const maxAllowedSec = settingsRef.current.maxDurationSec || 180;
+      const rawElapsed = Math.max(1, Math.round((Date.now() - sessionStartTimeRef.current) / 1000));
+      const duration = recordingSeconds > 0 
+        ? Math.min(recordingSeconds, maxAllowedSec) 
+        : Math.min(rawElapsed, maxAllowedSec);
 
-      if (chunks.length === 0 || duration < 1.5) {
+      if (chunks.length === 0 || duration < 1.0) {
         clearRecoverySession().catch(() => {});
         isProcessingVideoRef.current = false;
+        cleanupRecordingTracks();
         setState('STANDBY');
         return;
       }
@@ -606,6 +646,7 @@ export const KioskView: React.FC<KioskViewProps> = ({
 
   const handleReturnToStandby = () => {
     // Graceful soft reset without page reload to maintain high responsiveness & 0s camera delay
+    cleanupRecordingTracks();
     isProcessingVideoRef.current = false;
     activeSenderNameRef.current = '';
     setSenderNameInput('');
